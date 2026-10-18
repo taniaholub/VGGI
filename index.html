@@ -1,31 +1,50 @@
 <!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html>
 
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<title>PA#1</title>
-<style>
-    body {
-        background-color: #EEEEEE;
-    }
-</style>
+    <title>PA#2</title>
+    <style>
+        body {
+            background-color: #EEEEEE;
+        }
+        .controls label {
+            display: inline-block;
+            min-width: 140px;
+        }
+    </style>
 
-<script src="./Utils/trackball-rotator.js"></script>
-<script src="./Utils/m4.js"></script>
-<script src="./shader.gpu"></script>
-<script src="./main.js"></script>
+    <script src="./Utils/trackball-rotator.js"></script>
+    <script src="./Utils/m4.js"></script>
+    <script src="./shader.gpu"></script>
+    <script src="./main.js"></script>
+    <script src="./Model.js"></script>
 
 </head>
+
 <body onload="init()">
 
-<h2>A Cube with "Trackball" Mouse Rotation</h2>
+    <h2>Sievert's Surface: Phong shading, rotating light</h2>
 
-<p id="message">Drag your mouse on the cube to rotate it.<br>
-(On a touch screen, you can use your finger.)</p>
+    <p id="message">Drag your mouse on the surface to rotate it.<br>
+        (On a touch screen, you can use your finger.)</p>
 
+    <div class="controls">
+        <div>
+            <label for="sliderU">Granularity U: <b id="valU">60</b></label>
+            <input type="range" id="sliderU" min="4" max="120" step="1" value="60">
+        </div>
+        <div>
+            <label for="sliderV">Granularity V: <b id="valV">60</b></label>
+            <input type="range" id="sliderV" min="4" max="120" step="1" value="60">
+        </div>
+    </div>
 
-<div id="canvas-holder">
-   <canvas width="600" height="600" id="webglcanvas" style="background-color:red"></canvas>
-</div>
+    <div id="canvas-holder">
+        <canvas width="600" height="600" id="webglcanvas" style="background-color:red"></canvas>
+    </div>
 
+</body>
 
-</body></html>
+</html>
