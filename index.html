@@ -4,11 +4,12 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <title>PA#2</title>
+    <title>ControlTask</title>
     <style>
         body {
             background-color: #EEEEEE;
         }
+
         .controls label {
             display: inline-block;
             min-width: 140px;
@@ -20,12 +21,12 @@
     <script src="./shader.gpu"></script>
     <script src="./main.js"></script>
     <script src="./Model.js"></script>
-
+    <script src="./TextureHandler.js"></script>
 </head>
 
 <body onload="init()">
 
-    <h2>Sievert's Surface: Phong shading, rotating light</h2>
+    <h2>Sievert's Surface: textures, normal mapping, rotating light</h2>
 
     <p id="message">Drag your mouse on the surface to rotate it.<br>
         (On a touch screen, you can use your finger.)</p>
@@ -42,7 +43,7 @@
     </div>
 
     <div id="canvas-holder">
-        <canvas width="600" height="600" id="webglcanvas" style="background-color:red"></canvas>
+        <canvas id="webglcanvas"></canvas>
     </div>
 
 </body>

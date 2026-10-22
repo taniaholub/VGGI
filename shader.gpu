@@ -1,24 +1,30 @@
-// Vertex shader (Phong: only pass position and normal, lighting is per-pixel)
+// Vertex shader
 const vertexShaderSource = `
 attribute vec3 vertex;
 attribute vec3 normal;
+attribute vec3 tangent;     // dS/du, нове
+attribute vec2 texCoord;    // текстурні координати, нове
 
 uniform mat4 ModelViewProjectionMatrix;
 uniform mat4 ModelViewMatrix;
 uniform mat3 NormalMatrix;
 
-varying vec3 vPos;     // position in eye space
-varying vec3 vNormal;  // normal in eye space
+varying vec3 vPos;
+varying vec3 vNormal;
+varying vec3 vTangent;
+varying vec2 vTex;
 
 void main() {
     vec4 p = ModelViewMatrix * vec4(vertex, 1.0);
     vPos = p.xyz;
     vNormal = NormalMatrix * normal;
+    vTangent = NormalMatrix * tangent;   // у системі ока
+    vTex = texCoord;
     gl_Position = ModelViewProjectionMatrix * vec4(vertex, 1.0);
 }`;
 
 
-// Fragment shader: Irgb = Ambient + Diffuse + Specular
+// Fragment shader
 const fragmentShaderSource = `
 #ifdef GL_FRAGMENT_PRECISION_HIGH
    precision highp float;
@@ -26,23 +32,41 @@ const fragmentShaderSource = `
    precision mediump float;
 #endif
 
-uniform vec4 color;
-uniform vec3 lightPos;   // already multiplied by ModelView on CPU
+uniform sampler2D diffuseMap;
+uniform sampler2D specularMap;
+uniform sampler2D normalMap;
+uniform vec3 lightPos;       // вже помножена на ModelView на CPU
 
 varying vec3 vPos;
 varying vec3 vNormal;
+varying vec3 vTangent;
+varying vec2 vTex;
 
 void main() {
+    // Gram-Schmidt з пріоритетом тангенса:
+    // T не змінюється, з N віднімаємо його проєкцію на T
+    vec3 T = normalize(vTangent);
     vec3 N = normalize(vNormal);
+    N = normalize(N - dot(N, T) * T);
+    vec3 B = cross(N, T);
+    mat3 TBN = mat3(T, B, N);
+
+    // Нормаль з текстури: [0;1] -> [-1;1], потім в систему ока
+    vec3 nt = texture2D(normalMap, vTex).rgb * 2.0 - 1.0;
+    vec3 Nm = normalize(TBN * nt);
+
     vec3 V = vec3(0.0, 0.0, 1.0);          // global viewer model
-    if (dot(N, V) < 0.0) N = -N;           // two-sided lighting
+    if (dot(Nm, V) < 0.0) Nm = -Nm;        // двостороннє освітлення
 
     vec3 L = normalize(lightPos - vPos);
-    vec3 R = reflect(-L, N);
+    vec3 R = reflect(-L, Nm);
 
-    vec3 ambient  = 0.2 * color.rgb;
-    vec3 diffuse  = max(dot(N, L), 0.0) * 0.8 * color.rgb;
-    vec3 specular = pow(max(dot(R, V), 0.0), 40.0) * vec3(0.6);
+    vec3 diffTex = texture2D(diffuseMap, vTex).rgb;
+    vec3 specTex = texture2D(specularMap, vTex).rgb;
+
+    vec3 ambient  = 0.2 * diffTex;
+    vec3 diffuse  = max(dot(Nm, L), 0.0) * 0.8 * diffTex;           // diffuse * diffuse-текстура
+    vec3 specular = pow(max(dot(R, V), 0.0), 40.0) * 0.6 * specTex; // specular * specular-текстура
 
     gl_FragColor = vec4(ambient + diffuse + specular, 1.0);
 }`;
