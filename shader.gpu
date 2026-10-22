@@ -2,8 +2,8 @@
 const vertexShaderSource = `
 attribute vec3 vertex;
 attribute vec3 normal;
-attribute vec3 tangent;     // dS/du, нове
-attribute vec2 texCoord;    // текстурні координати, нове
+attribute vec3 tangent;     // dS/du
+attribute vec2 texCoord;    // текстурні координати
 
 uniform mat4 ModelViewProjectionMatrix;
 uniform mat4 ModelViewMatrix;
