@@ -2,8 +2,8 @@ function Model() {
   this.iBuffer = gl.createBuffer();   // індекси
   this.vBuffer = gl.createBuffer();   // вершини
   this.nBuffer = gl.createBuffer();   // нормалі
-  this.tBuffer = gl.createBuffer();   // тангенси (нове)
-  this.tcBuffer = gl.createBuffer();  // текстурні координати (нове)
+  this.tBuffer = gl.createBuffer();   // тангенси 
+  this.tcBuffer = gl.createBuffer();  // текстурні координати 
   this.count = 0;
 
   const C = 2.0;
@@ -31,7 +31,7 @@ function Model() {
     ];
   }
 
-  // Тангенс = dS/du, чисельна похідна центральною різницею (нове)
+  // Тангенс = dS/du, чисельна похідна центральною різницею 
   function surfaceTangent(u, v) {
     const h = 1e-4;
     const p1 = surfacePoint(u + h, v);
@@ -41,7 +41,7 @@ function Model() {
     return [t[0] / l, t[1] / l, t[2] / l];
   }
 
-  // Нормалі, зважені за кутом (без змін з PA2)
+  // Нормалі, зважені за кутом 
   function angleWeightedNormals(pos, ind) {
     const n = new Array(pos.length).fill(0);
     const P = (i) => [pos[3 * i], pos[3 * i + 1], pos[3 * i + 2]];
@@ -79,8 +79,8 @@ function Model() {
 
   this.BufferData = function (numU, numV) {
     const vertices = [];
-    const tangents = [];   // нове
-    const texCoords = [];  // нове
+    const tangents = [];   
+    const texCoords = [];  
     const indices = [];
 
     for (let i = 0; i <= numU; i++) {
