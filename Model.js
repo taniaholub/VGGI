@@ -79,8 +79,8 @@ function Model() {
 
   this.BufferData = function (numU, numV) {
     const vertices = [];
-    const tangents = [];   // нове
-    const texCoords = [];  // нове
+    const tangents = [];   
+    const texCoords = []; 
     const indices = [];
 
     for (let i = 0; i <= numU; i++) {
@@ -120,6 +120,11 @@ function Model() {
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
   };
 
+    // Точка поверхні за нормованими параметрами pu, pv з [0;1] (для маркера)
+  this.PointAt = function (pu, pv) {
+    return surfacePoint(uMin + pu * (uMax - uMin), vMin + pv * (vMax - vMin));
+  };
+  
   this.Draw = function () {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vBuffer);
     gl.vertexAttribPointer(shProgram.iAttribVertex, 3, gl.FLOAT, false, 0, 0);
